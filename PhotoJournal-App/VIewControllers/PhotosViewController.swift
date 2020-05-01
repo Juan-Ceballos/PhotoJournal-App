@@ -16,13 +16,46 @@ class PhotosViewController: UIViewController {
         view = photosView
     }
     
+    private lazy var imagePickerController: UIImagePickerController = {
+        let ip = UIImagePickerController()
+        ip.delegate = self
+        return ip
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         photosView.collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: "photoCell")
         photosView.collectionView.dataSource = self
         photosView.collectionView.delegate = self
+        photosView.plusButton.addTarget(self, action: #selector(didTap), for: .touchUpInside)
     }
+    
+    @objc private func didTap(sender: UIButton!)    {
+        print("tap")
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) { alertAction in
+            self.imagePickerController.sourceType = .photoLibrary
+            self.present(self.imagePickerController, animated: true)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        let cameraAction = UIAlertAction(title: "Camera", style: .default) { alertAction in
+            self.imagePickerController.sourceType = .camera
+            self.present(self.imagePickerController, animated: true)
+        }
+        
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alertController.addAction(cameraAction)
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(photoLibraryAction)
+        present(alertController, animated: true)
+    }
+    
 
 }
 
@@ -51,5 +84,15 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+}
+
+extension PhotosViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            return
+        }
+        dismiss(animated: true)
     }
 }
