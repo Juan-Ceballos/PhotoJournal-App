@@ -19,6 +19,27 @@ class PhotoCell: UICollectionViewCell {
         return imageView
     }()
     
+    private lazy var photoCommentLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Hey"
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var postDateLabel: UILabel = {
+        let label = UILabel()
+        label.text = Date().description
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var editPhotoButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = .white
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: UIScreen.main.bounds)
         commnonInit()
@@ -35,6 +56,9 @@ class PhotoCell: UICollectionViewCell {
     
     private func commnonInit()  {
         setupPhotoImageViewConstraints()
+        setupPhotoCommentLabelConstraint()
+        setupEditPhotoButton()
+        setupPostDateLabelConstraint()
     }
     
     private func setupPhotoImageViewConstraints()   {
@@ -47,6 +71,45 @@ class PhotoCell: UICollectionViewCell {
             photoImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             photoImageView.topAnchor.constraint(equalTo: topAnchor),
             photoImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7)
+        
+        ])
+    }
+    
+    private func setupPhotoCommentLabelConstraint()   {
+        addSubview(photoCommentLabel)
+        
+        photoCommentLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+        
+            photoCommentLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8),
+            photoCommentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
+        
+        ])
+    }
+    
+    private func setupPostDateLabelConstraint() {
+        addSubview(postDateLabel)
+        
+        postDateLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+        
+            postDateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -11),
+            postDateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
+        
+        ])
+    }
+    
+    private func setupEditPhotoButton() {
+        addSubview(editPhotoButton)
+        
+        editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+        
+            editPhotoButton.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8),
+            editPhotoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
         
         ])
     }
