@@ -32,28 +32,31 @@ class PhotosViewController: UIViewController {
     }
     
     @objc private func didTap(sender: UIButton!)    {
-        print("tap")
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) { alertAction in
-            self.imagePickerController.sourceType = .photoLibrary
-            self.present(self.imagePickerController, animated: true)
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-        let cameraAction = UIAlertAction(title: "Camera", style: .default) { alertAction in
-            self.imagePickerController.sourceType = .camera
-            self.present(self.imagePickerController, animated: true)
-        }
-        
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alertController.addAction(cameraAction)
-        }
-        
-        alertController.addAction(cancelAction)
-        alertController.addAction(photoLibraryAction)
-        present(alertController, animated: true)
+        let addPhotoController = AddPhotoViewController()
+        present(addPhotoController, animated: true)
+//        print("tap")
+//        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//
+//        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) { alertAction in
+//            self.imagePickerController.sourceType = .photoLibrary
+//            self.present(self.imagePickerController, animated: true)
+//        }
+//
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+//
+//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { alertAction in
+//            self.imagePickerController.sourceType = .camera
+//            self.present(self.imagePickerController, animated: true)
+//        }
+//
+//        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+//            alertController.addAction(cameraAction)
+//        }
+//
+//        alertController.addAction(cancelAction)
+//        alertController.addAction(photoLibraryAction)
+//        present(alertController, animated: true)
     }
     
 
