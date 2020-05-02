@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import DataPersistence
 
 class PhotosViewController: UIViewController {
 
     let photosView = PhotosView()
+    
+    var photos = [PhotoObject]()
     
     override func loadView() {
         view = photosView
@@ -22,6 +25,8 @@ class PhotosViewController: UIViewController {
 //        return ip
 //    }()
     
+    private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -29,9 +34,10 @@ class PhotosViewController: UIViewController {
         photosView.collectionView.dataSource = self
         photosView.collectionView.delegate = self
         photosView.plusButton.addTarget(self, action: #selector(didTap), for: .touchUpInside)
+        
     }
     
-    @objc private func didTap(sender: UIButton!)    {
+    @objc private func didTap(_ sender: UIButton)    {
         
         let addPhotoController = AddPhotoViewController()
         present(addPhotoController, animated: true)

@@ -13,6 +13,8 @@ class AddPhotoViewController: UIViewController {
 
     let addPhotoView = AddPhotoView()
     
+    var photos = [PhotoObject]()
+    
     var photoObject: PhotoObject?
     
     var selectedImage: UIImage? {
@@ -30,9 +32,14 @@ class AddPhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBlue
+        view.backgroundColor = .systemGreen
         imagePickerController.delegate = self
         addPhotoView.photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonPressed), for: .touchUpInside)
+        addPhotoView.saveButton.addTarget(self, action: #selector(saveButtonPressed(_:)), for: .touchUpInside)
+        
+        addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
+        
+        print("come on im over here")
     }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
@@ -40,18 +47,32 @@ class AddPhotoViewController: UIViewController {
     }
     
     @objc func saveButtonPressed(_ sender: UIButton)    {
+        print("pressed hi")
         
-        photoObject?.photoComment = "Hola"
-        
-        guard let photoToSave = photoObject else    {
-            return
+        guard let selectedImageData = selectedImage?.jpegData(compressionQuality: 1.0)
+            else    {
+                print("wrong")
+                return
         }
+        
+        let newPhoto = PhotoObject(imageData: selectedImageData, photoComment: "Hello")
                 
         do {
-            try dataPersistence.createItem(photoToSave)
+            try dataPersistence.createItem(newPhoto)
         } catch {
             print("error")
         }
+    }
+    
+    @objc func cancelButtonPressed(_ sender: UIButton)  {
+        print("hello from og")
+        do {
+            photos = try dataPersistence.loadItems()
+        } catch  {
+            print(error)
+        }
+        
+        print(photos.count)
     }
     
     private func showImageController(isCameraSelected: Bool)  {
@@ -71,13 +92,7 @@ extension AddPhotoViewController: UIImagePickerControllerDelegate, UINavigationC
             return
         }
         
-        guard let imageData = image.jpegData(compressionQuality: 1.0)
-            else    {
-                return
-        }
-        
         selectedImage = image
-        photoObject?.imageData = imageData
         
         dismiss(animated: true)
     }
