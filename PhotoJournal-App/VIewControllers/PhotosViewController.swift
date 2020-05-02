@@ -16,11 +16,11 @@ class PhotosViewController: UIViewController {
         view = photosView
     }
     
-    private lazy var imagePickerController: UIImagePickerController = {
-        let ip = UIImagePickerController()
-        ip.delegate = self
-        return ip
-    }()
+//    private lazy var imagePickerController: UIImagePickerController = {
+//        let ip = UIImagePickerController()
+//        ip.delegate = self
+//        return ip
+//    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,15 +87,5 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    }
-}
-
-extension PhotosViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
-            return
-        }
-        dismiss(animated: true)
     }
 }
