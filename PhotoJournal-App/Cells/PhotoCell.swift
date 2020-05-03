@@ -50,8 +50,8 @@ class PhotoCell: UICollectionViewCell {
         commnonInit()
     }
     
-    public func configureCell()    {
-        
+    public func configureCell(photoObject: PhotoObject)    {
+        photoImageView.image = UIImage(data: photoObject.imageData)
     }
     
     private func commnonInit()  {

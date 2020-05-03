@@ -9,11 +9,17 @@
 import UIKit
 import DataPersistence
 
+protocol PhotoObjectDelegate: AnyObject {
+    func photoAdded(_ photoObject: PhotoObject)
+}
+
 class AddPhotoViewController: UIViewController {
 
     let addPhotoView = AddPhotoView()
     
     var photos = [PhotoObject]()
+    
+    weak var delegate: PhotoObjectDelegate?
     
     var photoObject: PhotoObject?
     
@@ -38,8 +44,6 @@ class AddPhotoViewController: UIViewController {
         addPhotoView.saveButton.addTarget(self, action: #selector(saveButtonPressed(_:)), for: .touchUpInside)
         
         addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
-        
-        print("come on im over here")
     }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
@@ -47,7 +51,7 @@ class AddPhotoViewController: UIViewController {
     }
     
     @objc func saveButtonPressed(_ sender: UIButton)    {
-        print("pressed hi")
+        print("save button pressed")
         
         guard let selectedImageData = selectedImage?.jpegData(compressionQuality: 1.0)
             else    {
@@ -62,17 +66,13 @@ class AddPhotoViewController: UIViewController {
         } catch {
             print("error")
         }
+        
+        delegate?.photoAdded(newPhoto)
+        
     }
     
     @objc func cancelButtonPressed(_ sender: UIButton)  {
-        print("hello from og")
-        do {
-            photos = try dataPersistence.loadItems()
-        } catch  {
-            print(error)
-        }
-        
-        print(photos.count)
+        print("cancel button pressed")
     }
     
     private func showImageController(isCameraSelected: Bool)  {

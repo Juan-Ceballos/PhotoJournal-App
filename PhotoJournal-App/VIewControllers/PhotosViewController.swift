@@ -13,17 +13,15 @@ class PhotosViewController: UIViewController {
 
     let photosView = PhotosView()
     
-    var photos = [PhotoObject]()
+    var photos = [PhotoObject]()    {
+        didSet  {
+            photosView.collectionView.reloadData()
+        }
+    }
     
     override func loadView() {
         view = photosView
     }
-    
-//    private lazy var imagePickerController: UIImagePickerController = {
-//        let ip = UIImagePickerController()
-//        ip.delegate = self
-//        return ip
-//    }()
     
     private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
     
@@ -34,51 +32,45 @@ class PhotosViewController: UIViewController {
         photosView.collectionView.dataSource = self
         photosView.collectionView.delegate = self
         photosView.plusButton.addTarget(self, action: #selector(didTap), for: .touchUpInside)
+        print("PhotosVC")
+        setupUI()
+    }
+    
+    private func setupUI()  {
+        do {
+            photos = try dataPersistence.loadItems()
+        } catch  {
+            print(error)
+        }
         
+        print(photos.count)
     }
     
     @objc private func didTap(_ sender: UIButton)    {
         
         let addPhotoController = AddPhotoViewController()
+        addPhotoController.delegate = self
         present(addPhotoController, animated: true)
-//        print("tap")
-//        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-//
-//        let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) { alertAction in
-//            self.imagePickerController.sourceType = .photoLibrary
-//            self.present(self.imagePickerController, animated: true)
-//        }
-//
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-//
-//        let cameraAction = UIAlertAction(title: "Camera", style: .default) { alertAction in
-//            self.imagePickerController.sourceType = .camera
-//            self.present(self.imagePickerController, animated: true)
-//        }
-//
-//        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-//            alertController.addAction(cameraAction)
-//        }
-//
-//        alertController.addAction(cancelAction)
-//        alertController.addAction(photoLibraryAction)
-//        present(alertController, animated: true)
     }
     
-
 }
 
 extension PhotosViewController: UICollectionViewDataSource    {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCell else {
+            fatalError()
+        }
+        
+        let photoObject = photos[indexPath.row]
+        
+        cell.configureCell(photoObject: photoObject)
         
         return cell
     }
-    
     
 }
 
@@ -94,4 +86,11 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
+}
+
+extension PhotosViewController: PhotoObjectDelegate {
+    func photoAdded(_ photoObject: PhotoObject) {
+        photos.append(photoObject)
+    }
+
 }
