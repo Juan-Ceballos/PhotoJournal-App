@@ -9,6 +9,10 @@
 import UIKit
 import DataPersistence
 
+protocol EditButtonPressedDelegate: AnyObject {
+    func buttonPressed(tag: Int)
+}
+
 class PhotosViewController: UIViewController {
 
     let photosView = PhotosView()
@@ -66,8 +70,9 @@ extension PhotosViewController: UICollectionViewDataSource    {
         }
         
         let photoObject = photos[indexPath.row]
-        
+        cell.editPhotoButton.tag = indexPath.row
         cell.configureCell(photoObject: photoObject)
+        cell.delegate = self
         
         return cell
     }
@@ -91,6 +96,13 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
 extension PhotosViewController: PhotoObjectDelegate {
     func photoAdded(_ photoObject: PhotoObject) {
         photos.append(photoObject)
+    }
+
+}
+
+extension PhotosViewController: EditButtonPressedDelegate   {
+    func buttonPressed(tag: Int) {
+        print(tag)
     }
 
 }

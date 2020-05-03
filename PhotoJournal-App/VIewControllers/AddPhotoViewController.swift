@@ -71,7 +71,7 @@ class AddPhotoViewController: UIViewController {
             return
         }
         
-        let newPhoto = PhotoObject(imageData: selectedImageData, photoComment: currentCommentToAdd)
+        let newPhoto = PhotoObject(imageData: selectedImageData, date: Date(), photoComment: currentCommentToAdd)
                 
         do {
             try dataPersistence.createItem(newPhoto)

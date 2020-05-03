@@ -10,7 +10,7 @@ import Foundation
 
 struct PhotoObject: Codable, Equatable {
     var imageData: Data
-    let date = Date()
+    let date: Date
     let identifier = UUID().uuidString
     
     var convertedDate: String  {

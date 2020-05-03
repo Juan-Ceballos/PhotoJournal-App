@@ -11,6 +11,8 @@ import NetworkHelper
 
 class PhotoCell: UICollectionViewCell {
     
+    weak var delegate: EditButtonPressedDelegate?
+    
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")
@@ -31,12 +33,18 @@ class PhotoCell: UICollectionViewCell {
         return label
     }()
     
-    private lazy var editPhotoButton: UIButton = {
+    public lazy var editPhotoButton: UIButton = {
         let button = UIButton()
         button.tintColor = .white
         button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.addTarget(self, action: #selector(editPressed(_:)), for: .touchUpInside)
         return button
     }()
+    
+    @objc public func editPressed(_ sender: UIButton!)  {
+        print("edit button pressed")
+        self.delegate?.buttonPressed(tag: sender.tag)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: UIScreen.main.bounds)
