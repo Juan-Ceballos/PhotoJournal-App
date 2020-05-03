@@ -28,7 +28,6 @@ class PhotoCell: UICollectionViewCell {
     
     private lazy var postDateLabel: UILabel = {
         let label = UILabel()
-        label.text = Date().description
         label.textColor = .white
         return label
     }()
@@ -52,6 +51,8 @@ class PhotoCell: UICollectionViewCell {
     
     public func configureCell(photoObject: PhotoObject)    {
         photoImageView.image = UIImage(data: photoObject.imageData)
+        photoCommentLabel.text = photoObject.photoComment
+        postDateLabel.text = photoObject.convertedDate
     }
     
     private func commnonInit()  {
@@ -82,7 +83,7 @@ class PhotoCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
         
-            photoCommentLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8),
+            photoCommentLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 22),
             photoCommentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
         
         ])
@@ -108,7 +109,7 @@ class PhotoCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
         
-            editPhotoButton.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 8),
+            editPhotoButton.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 22),
             editPhotoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
         
         ])

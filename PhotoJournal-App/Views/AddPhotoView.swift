@@ -42,20 +42,20 @@ class AddPhotoView: UIView {
     public lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Save", for: .normal)
-        button.backgroundColor = .red
         return button
     }()
     
     public lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
-        button.backgroundColor = .red
         return button
     }()
        
     public lazy var commentTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .white
+        textView.text = "Say Something"
+        textView.textColor = .lightGray
         return textView
     }()
     
@@ -91,7 +91,7 @@ class AddPhotoView: UIView {
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 22),
+            saveButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 11),
             saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22),
         ])
     }
@@ -102,7 +102,7 @@ class AddPhotoView: UIView {
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            cancelButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 22),
+            cancelButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 11),
             cancelButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22)
         ])
     }
@@ -113,11 +113,11 @@ class AddPhotoView: UIView {
         commentTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            commentTextView.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 22),
-            commentTextView.topAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: 22),
+            commentTextView.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 11),
+            commentTextView.topAnchor.constraint(equalTo: cancelButton.bottomAnchor, constant: 11),
             commentTextView.leadingAnchor.constraint(equalTo: leadingAnchor),
             commentTextView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            commentTextView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.2)
+            commentTextView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.4)
         ])
     }
     

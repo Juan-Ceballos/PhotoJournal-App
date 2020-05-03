@@ -16,9 +16,7 @@ protocol PhotoObjectDelegate: AnyObject {
 class AddPhotoViewController: UIViewController {
 
     let addPhotoView = AddPhotoView()
-    
-    var photos = [PhotoObject]()
-    
+        
     weak var delegate: PhotoObjectDelegate?
     
     var photoObject: PhotoObject?
@@ -26,6 +24,12 @@ class AddPhotoViewController: UIViewController {
     var selectedImage: UIImage? {
         didSet  {
             addPhotoView.selectedPhotoImageView.image = selectedImage
+        }
+    }
+    
+    var commentToAdd: String?   {
+        didSet  {
+            addPhotoView.commentTextView.text = commentToAdd
         }
     }
     
@@ -38,12 +42,14 @@ class AddPhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGreen
+        view.backgroundColor = .white
         imagePickerController.delegate = self
         addPhotoView.photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonPressed), for: .touchUpInside)
         addPhotoView.saveButton.addTarget(self, action: #selector(saveButtonPressed(_:)), for: .touchUpInside)
         
         addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
+        
+        addPhotoView.commentTextView.delegate = self
     }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
@@ -59,7 +65,13 @@ class AddPhotoViewController: UIViewController {
                 return
         }
         
-        let newPhoto = PhotoObject(imageData: selectedImageData, photoComment: "Hello")
+        guard let currentCommentToAdd = commentToAdd
+        else    {
+            print("wrong")
+            return
+        }
+        
+        let newPhoto = PhotoObject(imageData: selectedImageData, photoComment: currentCommentToAdd)
                 
         do {
             try dataPersistence.createItem(newPhoto)
@@ -73,6 +85,7 @@ class AddPhotoViewController: UIViewController {
     
     @objc func cancelButtonPressed(_ sender: UIButton)  {
         print("cancel button pressed")
+        dismiss(animated: true)
     }
     
     private func showImageController(isCameraSelected: Bool)  {
@@ -95,5 +108,34 @@ extension AddPhotoViewController: UIImagePickerControllerDelegate, UINavigationC
         selectedImage = image
         
         dismiss(animated: true)
+    }
+}
+
+extension AddPhotoViewController: UITextViewDelegate    {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray  {
+            textView.text = nil
+            textView.textColor = .black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty    {
+            textView.text = "Say Something"
+            textView.textColor = .lightGray
+        }
+        
+        else    {
+            commentToAdd = textView.text
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        
+        if(text == "\n") {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }
