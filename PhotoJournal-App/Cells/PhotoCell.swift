@@ -15,7 +15,6 @@ class PhotoCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "photo")
         imageView.backgroundColor = .cyan
-        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -72,7 +71,6 @@ class PhotoCell: UICollectionViewCell {
             photoImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             photoImageView.topAnchor.constraint(equalTo: topAnchor),
             photoImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7)
-        
         ])
     }
     
@@ -82,10 +80,8 @@ class PhotoCell: UICollectionViewCell {
         photoCommentLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-        
             photoCommentLabel.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 22),
             photoCommentLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
-        
         ])
     }
     
@@ -95,10 +91,8 @@ class PhotoCell: UICollectionViewCell {
         postDateLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-        
             postDateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -11),
             postDateLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
-        
         ])
     }
     
@@ -108,10 +102,9 @@ class PhotoCell: UICollectionViewCell {
         editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-        
             editPhotoButton.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: 22),
             editPhotoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
-        
         ])
     }
+    
 }

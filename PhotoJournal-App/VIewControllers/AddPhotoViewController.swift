@@ -8,6 +8,7 @@
 
 import UIKit
 import DataPersistence
+import AVFoundation
 
 protocol PhotoObjectDelegate: AnyObject {
     func photoAdded(_ photoObject: PhotoObject)
@@ -46,10 +47,9 @@ class AddPhotoViewController: UIViewController {
         imagePickerController.delegate = self
         addPhotoView.photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonPressed), for: .touchUpInside)
         addPhotoView.saveButton.addTarget(self, action: #selector(saveButtonPressed(_:)), for: .touchUpInside)
-        
         addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
-        
         addPhotoView.commentTextView.delegate = self
+        addPhotoView.saveButton.isEnabled = false
     }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
@@ -59,7 +59,7 @@ class AddPhotoViewController: UIViewController {
     @objc func saveButtonPressed(_ sender: UIButton)    {
         print("save button pressed")
         
-        guard let selectedImageData = selectedImage?.jpegData(compressionQuality: 1.0)
+        guard let selectedImageData = selectedImage?.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)).jpegData(compressionQuality: 1.0)
             else    {
                 print("wrong")
                 return
@@ -80,7 +80,6 @@ class AddPhotoViewController: UIViewController {
         }
         
         delegate?.photoAdded(newPhoto)
-        
     }
     
     @objc func cancelButtonPressed(_ sender: UIButton)  {
@@ -107,6 +106,10 @@ extension AddPhotoViewController: UIImagePickerControllerDelegate, UINavigationC
         
         selectedImage = image
         
+        if !addPhotoView.commentTextView.text.isEmpty && addPhotoView.commentTextView.textColor != .lightGray    {
+            addPhotoView.saveButton.isEnabled = true
+        }
+        
         dismiss(animated: true)
     }
 }
@@ -127,6 +130,9 @@ extension AddPhotoViewController: UITextViewDelegate    {
         
         else    {
             commentToAdd = textView.text
+            if selectedImage != nil {
+                addPhotoView.saveButton.isEnabled = true
+            }
         }
     }
     

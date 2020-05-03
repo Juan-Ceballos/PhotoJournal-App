@@ -67,7 +67,6 @@ class PhotosView: UIView {
         toolBar.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-        
             toolBar.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             toolBar.trailingAnchor.constraint(equalTo: trailingAnchor),
             toolBar.leadingAnchor.constraint(equalTo: leadingAnchor),
