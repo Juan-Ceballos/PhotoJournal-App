@@ -109,6 +109,8 @@ extension PhotosViewController: PhotoObjectDelegate {
         case .edit:
             print()
             photos[at ?? 0] = photoObject
+        case .delete:
+            print()
         }
     }
 
@@ -139,8 +141,21 @@ extension PhotosViewController: EditButtonPressedDelegate   {
             
         let cancelAction = UIAlertAction(title: "Cancel", style: .default)
         
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive)  {
+            [weak self] alertAction in
+            
+            do  {
+                try self?.dataPersistence.deleteItem(at: indexPath.row)
+                self?.photos.remove(at: indexPath.row)
+            }
+            catch   {
+                print("error")
+            }
+        }
+        
         alertController.addAction(editAction)
         alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
         present(alertController, animated: true)
     }
 

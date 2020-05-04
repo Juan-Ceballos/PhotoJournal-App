@@ -13,6 +13,7 @@ import AVFoundation
 enum Save  {
     case new
     case edit
+    case delete
 }
 
 protocol PhotoObjectDelegate: AnyObject {
@@ -109,6 +110,9 @@ class AddPhotoViewController: UIViewController {
             print("trying to edit")
             dataPersistence?.update(newPhoto, at: number ?? 0)
             delegate?.photoAdded(newPhoto, save: .edit, at: number)
+        case .delete:
+            print()
+//            dataPersistence?.deleteItem(at: number ?? 0)
         }
         
         dismiss(animated: true)
