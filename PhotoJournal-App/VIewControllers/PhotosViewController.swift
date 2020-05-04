@@ -106,9 +106,11 @@ extension PhotosViewController: PhotoObjectDelegate {
         case .new:
             print()
             photos.append(photoObject)
+            photos = photos.sorted(by: {$0.date > $1.date})
         case .edit:
             print()
             photos[at ?? 0] = photoObject
+            photos = photos.sorted(by: {$0.date > $1.date})
         }
     }
 
