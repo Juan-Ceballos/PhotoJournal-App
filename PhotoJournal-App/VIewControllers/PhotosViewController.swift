@@ -109,8 +109,6 @@ extension PhotosViewController: PhotoObjectDelegate {
         case .edit:
             print()
             photos[at ?? 0] = photoObject
-        case .delete:
-            print()
         }
     }
 
