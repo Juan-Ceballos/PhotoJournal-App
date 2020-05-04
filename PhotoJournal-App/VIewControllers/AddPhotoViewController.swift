@@ -16,7 +16,7 @@ enum Save  {
 }
 
 protocol PhotoObjectDelegate: AnyObject {
-    func photoAdded(_ photoObject: PhotoObject)
+    func photoAdded(_ photoObject: PhotoObject, save: Save, at: Int?)
 }
 
 class AddPhotoViewController: UIViewController {
@@ -24,6 +24,8 @@ class AddPhotoViewController: UIViewController {
     let addPhotoView = AddPhotoView()
     
     var save: Save = .new
+    
+    var number: Int?
     
     weak var delegate: PhotoObjectDelegate?
     
@@ -42,7 +44,7 @@ class AddPhotoViewController: UIViewController {
     }
     
     private let imagePickerController = UIImagePickerController()
-    private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
+    public var dataPersistence: DataPersistence<PhotoObject>?
     
     override func loadView() {
         view = addPhotoView
@@ -57,7 +59,6 @@ class AddPhotoViewController: UIViewController {
         addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
         addPhotoView.commentTextView.delegate = self
         addPhotoView.saveButton.isEnabled = false
-        //setupUIForEdit()
     }
     
         override func viewWillAppear(_ animated: Bool) {
@@ -72,16 +73,6 @@ class AddPhotoViewController: UIViewController {
                 addPhotoView.commentTextView.textColor = .black
                 addPhotoView.saveButton.isEnabled = true
             }
-    //
-            
-    //            addPhotoView.commentTextView.text = currentPhotoBeingEdited.photoComment
-    //            addPhotoView.selectedPhotoImageView.image = UIImage(data: currentPhotoBeingEdited.imageData)
-    //            addPhotoView.commentTextView.textColor = .black
-    //            addPhotoView.saveButton.isEnabled = true
-    //            commentToAdd = addPhotoView.commentTextView.text
-    //            selectedImage = addPhotoView.selectedPhotoImageView.image
-    //        }
-    //
         }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
@@ -90,11 +81,6 @@ class AddPhotoViewController: UIViewController {
     
     @objc func saveButtonPressed(_ sender: UIButton)    {
         print("save button pressed")
-        
-        // switch on save
-        // by the time i hit save ui will be there
-        // send state over
-        // send ui over
         
         guard let selectedImageData = selectedImage?.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)).jpegData(compressionQuality: 1.0)
             else    {
@@ -114,16 +100,17 @@ class AddPhotoViewController: UIViewController {
         case .new:
             print()
             do {
-                try dataPersistence.createItem(newPhoto)
+                try dataPersistence?.createItem(newPhoto)
+                delegate?.photoAdded(newPhoto, save: .new, at: nil)
             } catch {
                 print("error")
             }
         case .edit:
             print("trying to edit")
-            //dataPersistence.update(newPhoto, at: 0)
+            dataPersistence?.update(newPhoto, at: number ?? 0)
+            delegate?.photoAdded(newPhoto, save: .edit, at: number)
         }
         
-        delegate?.photoAdded(newPhoto)
         dismiss(animated: true)
     }
     

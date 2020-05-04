@@ -10,7 +10,7 @@ import UIKit
 import DataPersistence
 
 protocol EditButtonPressedDelegate: AnyObject {
-    func buttonPressed(tag: Int)
+    func buttonPressed(tag: Int, currentCell: PhotoCell)
 }
 
 class PhotosViewController: UIViewController {
@@ -44,7 +44,7 @@ class PhotosViewController: UIViewController {
     
     private func setupUI()  {
         do {
-            photos = try dataPersistence.loadItems()
+            photos = try dataPersistence.loadItems().sorted(by: {$0.date > $1.date})
         } catch  {
             print(error)
         }
@@ -55,6 +55,7 @@ class PhotosViewController: UIViewController {
     @objc private func didTap(_ sender: UIButton)    {
         let addPhotoController = AddPhotoViewController()
         addPhotoController.delegate = self
+        addPhotoController.dataPersistence = dataPersistence
         present(addPhotoController, animated: true)
     }
     
@@ -100,27 +101,39 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
 }
 
 extension PhotosViewController: PhotoObjectDelegate {
-    func photoAdded(_ photoObject: PhotoObject) {
-        photos.append(photoObject)
+    func photoAdded(_ photoObject: PhotoObject, save: Save, at: Int?) {
+        switch save {
+        case .new:
+            print()
+            photos.append(photoObject)
+        case .edit:
+            print()
+            photos[at ?? 0] = photoObject
+        }
     }
 
 }
 
 extension PhotosViewController: EditButtonPressedDelegate   {
-    func buttonPressed(tag: Int) {
+    func buttonPressed(tag: Int, currentCell: PhotoCell) {
         print(tag)
+        
+        guard let indexPath = photosView.collectionView.indexPath(for: currentCell)
+            else    {
+                return
+        }
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let editAction = UIAlertAction(title: "Edit", style: .default) { [weak self] alertAction in
         
             let addPhotoController = AddPhotoViewController()
+            addPhotoController.delegate = self
             addPhotoController.photoObject = self?.photos[tag]
             addPhotoController.save = .edit
+            addPhotoController.number = indexPath.row
+            addPhotoController.dataPersistence = self?.dataPersistence
             self?.present(addPhotoController, animated: true)
-            //self?.addPhotoController.photoObjectToUpdate = self?.photos[tag]
-            //self?.addPhotoController.number = tag
-            //self?.present(self?.addPhotoController ?? AddPhotoViewController(), animated: true)
             
         }
             
