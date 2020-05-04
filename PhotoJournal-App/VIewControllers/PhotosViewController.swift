@@ -27,8 +27,10 @@ class PhotosViewController: UIViewController {
         view = photosView
     }
     
-    private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
+    weak var delegate: PhotoObjectDelegate?
     
+    private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -51,7 +53,6 @@ class PhotosViewController: UIViewController {
     }
     
     @objc private func didTap(_ sender: UIButton)    {
-        
         let addPhotoController = AddPhotoViewController()
         addPhotoController.delegate = self
         present(addPhotoController, animated: true)
@@ -91,6 +92,11 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout    {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+    }
+    
 }
 
 extension PhotosViewController: PhotoObjectDelegate {
@@ -103,6 +109,26 @@ extension PhotosViewController: PhotoObjectDelegate {
 extension PhotosViewController: EditButtonPressedDelegate   {
     func buttonPressed(tag: Int) {
         print(tag)
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let editAction = UIAlertAction(title: "Edit", style: .default) { [weak self] alertAction in
+        
+            let addPhotoController = AddPhotoViewController()
+            addPhotoController.photoObject = self?.photos[tag]
+            addPhotoController.save = .edit
+            self?.present(addPhotoController, animated: true)
+            //self?.addPhotoController.photoObjectToUpdate = self?.photos[tag]
+            //self?.addPhotoController.number = tag
+            //self?.present(self?.addPhotoController ?? AddPhotoViewController(), animated: true)
+            
+        }
+            
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+        
+        alertController.addAction(editAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true)
     }
 
 }

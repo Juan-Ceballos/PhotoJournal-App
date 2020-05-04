@@ -10,14 +10,21 @@ import UIKit
 import DataPersistence
 import AVFoundation
 
+enum Save  {
+    case new
+    case edit
+}
+
 protocol PhotoObjectDelegate: AnyObject {
     func photoAdded(_ photoObject: PhotoObject)
 }
 
 class AddPhotoViewController: UIViewController {
-
+    
     let addPhotoView = AddPhotoView()
-        
+    
+    var save: Save = .new
+    
     weak var delegate: PhotoObjectDelegate?
     
     var photoObject: PhotoObject?
@@ -50,7 +57,32 @@ class AddPhotoViewController: UIViewController {
         addPhotoView.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
         addPhotoView.commentTextView.delegate = self
         addPhotoView.saveButton.isEnabled = false
+        //setupUIForEdit()
     }
+    
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(true)
+            if save == .edit    {setupUIForEdit()}
+        }
+    
+        func setupUIForEdit()    {
+            if let currentPhotoBeingEdited = photoObject    {
+                selectedImage = UIImage(data: currentPhotoBeingEdited.imageData)
+                commentToAdd = currentPhotoBeingEdited.photoComment
+                addPhotoView.commentTextView.textColor = .black
+                addPhotoView.saveButton.isEnabled = true
+            }
+    //
+            
+    //            addPhotoView.commentTextView.text = currentPhotoBeingEdited.photoComment
+    //            addPhotoView.selectedPhotoImageView.image = UIImage(data: currentPhotoBeingEdited.imageData)
+    //            addPhotoView.commentTextView.textColor = .black
+    //            addPhotoView.saveButton.isEnabled = true
+    //            commentToAdd = addPhotoView.commentTextView.text
+    //            selectedImage = addPhotoView.selectedPhotoImageView.image
+    //        }
+    //
+        }
     
     @objc func photoLibraryButtonPressed(_ sender: UIButton!) {
         showImageController(isCameraSelected: false)
@@ -59,6 +91,11 @@ class AddPhotoViewController: UIViewController {
     @objc func saveButtonPressed(_ sender: UIButton)    {
         print("save button pressed")
         
+        // switch on save
+        // by the time i hit save ui will be there
+        // send state over
+        // send ui over
+        
         guard let selectedImageData = selectedImage?.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)).jpegData(compressionQuality: 1.0)
             else    {
                 print("wrong")
@@ -66,20 +103,28 @@ class AddPhotoViewController: UIViewController {
         }
         
         guard let currentCommentToAdd = commentToAdd
-        else    {
-            print("wrong")
-            return
+            else    {
+                print("wrong")
+                return
         }
         
         let newPhoto = PhotoObject(imageData: selectedImageData, date: Date(), photoComment: currentCommentToAdd)
-                
-        do {
-            try dataPersistence.createItem(newPhoto)
-        } catch {
-            print("error")
+        
+        switch save {
+        case .new:
+            print()
+            do {
+                try dataPersistence.createItem(newPhoto)
+            } catch {
+                print("error")
+            }
+        case .edit:
+            print("trying to edit")
+            //dataPersistence.update(newPhoto, at: 0)
         }
         
         delegate?.photoAdded(newPhoto)
+        dismiss(animated: true)
     }
     
     @objc func cancelButtonPressed(_ sender: UIButton)  {
@@ -94,7 +139,7 @@ class AddPhotoViewController: UIViewController {
         }
         present(imagePickerController, animated: true)
     }
-
+    
 }
 
 extension AddPhotoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -127,7 +172,7 @@ extension AddPhotoViewController: UITextViewDelegate    {
             textView.text = "Say Something"
             textView.textColor = .lightGray
         }
-        
+            
         else    {
             commentToAdd = textView.text
             if selectedImage != nil {
@@ -145,3 +190,4 @@ extension AddPhotoViewController: UITextViewDelegate    {
         return true
     }
 }
+

@@ -44,6 +44,8 @@ class PhotoCell: UICollectionViewCell {
     @objc public func editPressed(_ sender: UIButton!)  {
         print("edit button pressed")
         self.delegate?.buttonPressed(tag: sender.tag)
+        
+        // press this button open action sheet, take this cell
     }
     
     override init(frame: CGRect) {
